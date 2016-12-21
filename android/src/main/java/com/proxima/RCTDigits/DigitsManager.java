@@ -162,7 +162,9 @@ public class DigitsManager extends ReactContextBaseJavaModule implements Lifecyc
 
             promise.resolve(authHeadersNativeMap);
         } else if (digitsException != null) {
-            promise.reject(digitsException);
+          promise.reject(digitsException.getErrorCode()+""
+              , digitsException.getMessage()
+              , digitsException);
         } else {
             promise.reject("Authentification failed without exception.");
         }
