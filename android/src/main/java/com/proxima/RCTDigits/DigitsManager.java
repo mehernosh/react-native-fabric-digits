@@ -40,6 +40,7 @@ public class DigitsManager extends ReactContextBaseJavaModule implements Lifecyc
 
     public DigitsManager(ReactApplicationContext reactContext) {
         super(reactContext);
+        getReactApplicationContext().addLifecycleEventListener(this);
     }
 
     @Override
@@ -54,7 +55,6 @@ public class DigitsManager extends ReactContextBaseJavaModule implements Lifecyc
             return;
         }
 
-        getReactApplicationContext().addLifecycleEventListener(this);
         this.promise = promise;
 
         String phoneNumber = options.hasKey("phoneNumber") ? options.getString("phoneNumber") : "";
