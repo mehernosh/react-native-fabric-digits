@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.digits.sdk.android.AuthCallback;
 import com.digits.sdk.android.Digits;
-import com.digits.sdk.android.DigitsAuthConfig;
+import com.digits.sdk.android.AuthConfig;
 import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsOAuthSigning;
 import com.digits.sdk.android.DigitsSession;
@@ -57,15 +57,14 @@ public class DigitsManager extends ReactContextBaseJavaModule implements Lifecyc
 
         this.promise = promise;
 
-        String phoneNumber = options.hasKey("phoneNumber") ? options.getString("phoneNumber") : "";
+        String phoneNumber = options.hasKey("phoneNumber") ? options.getString("phoneNumber") : "+91";
 
         // Check for Twitter config
         getTwitterAuthConfig();
 
-        DigitsAuthConfig.Builder digitsAuthConfigBuilder = new DigitsAuthConfig.Builder()
+        AuthConfig.Builder digitsAuthConfigBuilder = new AuthConfig.Builder()
                 .withAuthCallBack(this)
-                .withPhoneNumber(phoneNumber)
-                .withThemeResId(R.style.CustomDigitsTheme);
+                .withPhoneNumber(phoneNumber);
 
         if (options.hasKey("email")) {
           digitsAuthConfigBuilder.withEmailCollection();
@@ -76,12 +75,12 @@ public class DigitsManager extends ReactContextBaseJavaModule implements Lifecyc
 
     @ReactMethod
     public void logout() {
-        Digits.getSessionManager().clearActiveSession();
+        Digits.clearActiveSession();
     }
 
     @ReactMethod
     public void sessionDetails(Callback callback) {
-        DigitsSession session = Digits.getSessionManager().getActiveSession();
+        DigitsSession session = Digits.getActiveSession();
         if (session != null) {
             WritableMap sessionData = new WritableNativeMap();
             sessionData.putString("userId", new Long(session.getId()).toString());
@@ -163,7 +162,7 @@ public class DigitsManager extends ReactContextBaseJavaModule implements Lifecyc
 
             promise.resolve(authHeadersNativeMap);
         } else if (digitsException != null) {
-            promise.reject(digitsException.toString());
+            promise.reject(digitsException);
         } else {
             promise.reject("Authentification failed without exception.");
         }
